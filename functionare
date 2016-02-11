@@ -16,7 +16,7 @@ TODO0.0. script instalare bash_aliases & other stuff ...
 
 4. [client] deschide: rc-client 127.0.0.1 <port>
 5. [client] repeta pasii 2 si 3 pt client
-6. schimbul de chei, prin socket: (registration)
+6. schimbul de chei, prin socket: (registration) -> problema de transmitere key.pub a serverului spre client (la server e ok, la client ajunge cheia publica personala - cea transmisa inainte prin sd -> trebuie facut flush pe socket ???)
 	-> brut, pt testare: 
 		- client: cp ../server/key.pub key-server.pub
 		- server: cp ../client/key.pub key-client.pub
