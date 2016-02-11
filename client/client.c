@@ -182,7 +182,6 @@ int main (int argc, char *argv[])
 {
   int sd;			// descriptorul de socket
   struct sockaddr_in server;	// structura folosita pentru conectare 
-  char msg[500];		// mesajul trimis - o cheie publica (la una privata de 2048 -> 1700) va fi de 451
 
   /* exista toate argumentele in linia de comanda? */
   if (argc == 4){
@@ -287,15 +286,18 @@ else{
       perror ("[client]Eroare la connect().\n");
       return errno;
     }
+	
+
+   char msg[700];// mesajul trimis - o cheie publica (la una privata de 2048 -> 1700) va fi de 451
 
   /****** schimbul de chei */
-  bzero (msg, 500);
+  bzero (msg, 700);
   printf ("[client] se realizeaza schimbul de chei\n ");
   int send_fd = open("key.pub", O_RDWR, 0666);
-  read (send_fd, msg, 500);
+  read (send_fd, msg, 700);
   close(send_fd);
   /* trimiterea mesajului la server */
-  if (write (sd, msg, 500) <= 0)
+  if (write (sd, msg, 700) <= 0)
     {
       perror ("[client]Eroare la write() spre server.\n");
       return errno;
@@ -310,38 +312,49 @@ else{
   /* afisam mesajul primit */
   printf ("[client]Mesajul primit este: %s\n", msg);
 
-  /* citirea raspunsului dat de server 
-     (apel blocant pina cind serverul raspunde) */
-  if (read (sd, msg, 500) < 0)
-  {
-      perror ("[client]Eroare la read() de la server.\n");
-      return errno;
-   }
-
-
-  /******* instructiuni - citirea mesajului */
-  bzero (msg, 100);
-  printf ("[client]Introduceti o adresa: ");
-  fflush (stdout);
-  read (0, msg, 100);
-  
-  /* trimiterea mesajului la server */
-  if (write (sd, msg, 100) <= 0)
-    {
-      perror ("[client]Eroare la write() spre server.\n");
-      return errno;
-    }
-
-  /* citirea raspunsului dat de server 
-     (apel blocant pina cind serverul raspunde) */
-  if (read (sd, msg, 100) < 0)
-    {
-      perror ("[client]Eroare la read() de la server.\n");
-      return errno;
-    }
-  /* afisam mesajul primit */
-  printf ("[client]Mesajul primit este: %s\n", msg);
+  if (accept_PK(sd)){
+	printf("[client] client -> cheie publica primita \n");
+  }
 
   /* inchidem conexiunea, am terminat */
   close (sd);
 }
+
+int accept_PK(int fd)
+{
+  char buffer[700];		/* mesajul */
+  int bytes;			/* numarul de octeti cititi/scrisi */
+  char msg[700];		//mesajul primit de la client 
+  char msgrasp[100]=" ";        //mesaj de raspuns pentru client
+printf ("[server]Mesajul din cahce...%s\n", msg);
+  bzero (msg, sizeof (msg));
+  bytes = read (fd, msg, sizeof (buffer));
+  if (bytes < 0)
+    {
+      perror ("Eroare la read() de la client.\n");
+      return 0;
+    }
+  printf ("[server]Mesajul a fost receptionat...%s\n", msg);
+
+  /*se creeaza un fisier unic in care se stocheaza cheia publica a unui client*/
+  char temp[20] = "server_pk";
+
+  FILE * pkFile;
+  pkFile = fopen(temp, "w");
+  fprintf(pkFile, "%s", msg);
+  fclose(pkFile);
+
+  /*pregatim mesajul de raspuns */
+  bzero(msgrasp,100);
+  strcat(msgrasp,"client -> cheie publica primita");
+  printf("[server]Trimitem mesajul inapoi...%s\n",msgrasp);
+      
+  if (bytes && write (fd, msgrasp, bytes) < 0)
+    {
+      perror ("[server] Eroare la write() catre client.\n");
+      return 0;
+    }
+  
+  return bytes;
+}
+

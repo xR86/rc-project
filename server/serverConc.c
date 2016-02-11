@@ -32,7 +32,8 @@
 /*extra messages - flag verbose at server startup with "--verbose"*/
 int verbose = 0;
 
-int counter = 23;
+/*CLcounter = client counter*/
+int CLcounter = 23;
 
 /*Buffer size pt sendfile*/
 #define BUFSIZ 3000
@@ -386,25 +387,28 @@ else{
 		close (send_fd);
       	  	if (accept_PK(fd))
       		 {
+		   if(send_PK(fd)){
       		  printf ("[server] S-a deconectat clientul cu descriptorul %d.\n",fd);
       		  fflush (stdout);
+		  CLcounter=CLcounter+1;
       		  close (fd);		/* inchidem conexiunea cu clientul */
       		  FD_CLR (fd, &actfds);/* scoatem si din multime */
-      		  
+      		   }
       		 }
   	   }
   	}			/* for */
 }				/* while */
 }				/* main */
 
-/* realizeaza primirea si retrimiterea unui mesaj unui client */
+/* realizeaza primirea unui mesaj unui client */
 int accept_PK(int fd)
 {
-  char buffer[700];		/* mesajul */
+  char buffer[500];		/* mesajul */
   int bytes;			/* numarul de octeti cititi/scrisi */
   char msg[500];		//mesajul primit de la client 
   char msgrasp[100]=" ";        //mesaj de raspuns pentru client
 
+  bzero (msg, sizeof (msg));
   bytes = read (fd, msg, sizeof (buffer));
   if (bytes < 0)
     {
@@ -413,15 +417,15 @@ int accept_PK(int fd)
     }
   printf ("[server]Mesajul a fost receptionat...%s\n", msg);
 
-  
-  ssize_t nrd;
-  int fd1 = open(msg[0], buffer, 500, O_RDONLY);
-  char * temp = "client_pk_";
-  strcat(temp, counter);
-  int fd2 = open("client_pk_", O_CREAT | O_WRONLY);
-  while(nrd=read(fd1,buffer,500)){
-	write(fd2,buffer,nrd);
-  }
+  /*se creeaza un fisier unic in care se stocheaza cheia publica a unui client*/
+  char temp[20] = "client_pk_";
+  char noCL[10];
+  sprintf(noCL,"%d",CLcounter);
+  strcat(temp, noCL);
+  FILE * pkFile;
+  pkFile = fopen(temp, "w");
+  fprintf(pkFile, "%s", msg);
+  fclose(pkFile);
 
   /*pregatim mesajul de raspuns */
   bzero(msgrasp,100);
@@ -435,6 +439,38 @@ int accept_PK(int fd)
     }
   
   return bytes;
+}
+
+/* realizeaza trimiterea unui mesaj unui client */
+int send_PK(int fd)
+{
+  char buffer[700];		/* mesajul */
+  char msg[700];		//mesajul primit de la client 
+  char msgrasp[100]=" ";        //mesaj de raspuns pentru client
+
+    /****** schimbul de chei */
+  bzero (msg, 700);
+  int send_fd = open("key.pub", O_RDWR, 0666);
+  read (send_fd, msg, 700);
+  close(send_fd);
+  printf ("[client]Mesajul trimis este: %s\n", msg);
+  /* trimiterea mesajului la client */
+  if (write (fd, msg, 700) <= 0)
+    {
+      perror ("[client]Eroare la write() spre server.\n");
+      return errno;
+    }
+/* citirea raspunsului dat de client
+     (apel blocant pina cind clientul raspunde) */
+  if (read (fd, msgrasp, 100) < 0)
+    {
+      perror ("[client]Eroare la read() de la server.\n");
+      return 0;
+    }
+  /* afisam mesajul primit */
+  printf ("[client]Mesajul primit este: %s\n", msgrasp);
+  
+  return 1;
 }
 
 /* realizeaza primirea si retrimiterea unui mesaj unui client */
