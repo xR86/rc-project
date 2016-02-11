@@ -10,7 +10,7 @@ TODO0.0. script instalare bash_aliases & other stuff ...
 		-> trateaza exceptie in caz ca nu se instaleaza
 	-> daca da, executa: openssl genrsa -out key-priv.txt 2048
 		-> trateaza exceptie in caz ca nu se genereaza
-
+/*execlp -> stdout/stderr de la bash apare in terminal, nu ? */
 3. [server] creeaza cheie publica: openssl rsa -in key-priv.txt -pubout >key.pub
 	-> trateaza exceptie daca nu se creeaza
 

@@ -13,12 +13,170 @@
 #include <stdlib.h>
 #include <netdb.h>
 #include <string.h>
+#include <sys/stat.h> /*pt open*/
+#include <fcntl.h> /*pt open*/
+
+/*ANSI colours*/
+#define ANSI_RED     "\x1b[31m"
+#define ANSI_GREEN   "\x1b[32m"
+#define ANSI_YELLOW  "\x1b[33m"
+#define ANSI_BLUE    "\x1b[34m"
+#define ANSI_MAGENTA "\x1b[35m"
+#define ANSI_CYAN    "\x1b[36m"
+#define ANSI_RESET   "\x1b[0m"
+
+/*extra messages - flag verbose at server startup with "--verbose"*/
+int verbose = 0;
 
 /* codul de eroare returnat de anumite apeluri */
 extern int errno;
 
 /* portul de conectare la server*/
 int port;
+
+
+/*check if file empty -> used in check_openssl()*/
+int isEmpty(FILE *file)
+{
+    long savedOffset = ftell(file);
+    fseek(file, 0, SEEK_END);
+
+    if (ftell(file) == 0)
+    {
+        return 1;
+    }
+
+    fseek(file, savedOffset, SEEK_SET);
+    return 0;
+}
+
+/*check if openssl is installed*/
+int check_openssl(){
+  pid_t pid;	/* PID-ul procesului copil */
+  int status;	/* starea de terminare a procesului copil */
+
+  //printf ("Vom executa comanda...\n");
+
+  if ((pid = fork ()) < 0)
+    {
+      perror ("fork()");
+      return 0;/*not ok - exit(1)*/
+    }
+  else if (pid)	/* parinte */
+    {
+      if (wait (&status) < 0)
+	{
+	  perror ("wait()");
+	}
+      FILE * checkfile;
+      checkfile = fopen("openssl_checker_file","r");
+      if(isEmpty(checkfile)){ return 0; }
+      //printf ("Comanda a fost executata.\n");
+      return 1;/*ok - exit(0)*/
+    }
+  else	/* fiu */
+    {
+	int fd = open("openssl_checker_file", O_WRONLY|O_CREAT|O_TRUNC, 0666);
+	dup2(fd, 1);
+	close(fd);
+      execlp ("which",
+	      /* comanda de executat (se va cauta in directoarele din PATH) */
+	      "which",		/* argv[0] */
+	      "openssl",	/* argv[1]*/
+	      NULL);
+      /* daca ajungem aici inseamna ca nu s-a putut executa */
+      //printf ("Eroare de executie!\n");
+      return 0;/*not ok - exit(1)*/
+    }
+}
+
+/*generate RSA private key for securing transaction*/
+int gen_privkey(){
+  pid_t pid;	/* PID-ul procesului copil */
+  int status;	/* starea de terminare a procesului copil */
+
+  if ((pid = fork ()) < 0)
+    {
+      perror ("fork()");
+      return 0;/*not ok - exit(1)*/
+    }
+  else if (pid)			/* parinte */
+    {
+      if (wait (&status) < 0)
+	{
+	  perror ("wait()");
+	}
+      FILE * checkfile;
+      checkfile = fopen("key-priv.txt","r");
+      if(isEmpty(checkfile)){ return 0; }
+	if(verbose==1){
+      	   printf (ANSI_CYAN "Comanda a fost executata.\n" ANSI_RESET);
+	}
+      return 1;/*ok - exit(0)*/
+    }
+  else	/* fiu */
+    {
+      execlp ("openssl",
+	      /* comanda de executat (se va cauta in directoarele din PATH) */
+	      "openssl",		/* argv[0] */
+	      "genrsa",	/* argv[1]*/
+	      "-out",	/* argv[2]*/
+	      "key-priv.txt",/* argv[3]*/
+	      "2048",	/* argv[4]*/
+	      NULL);
+      /* daca ajungem aici inseamna ca nu s-a putut executa */
+      if(verbose==1){
+      	printf (ANSI_CYAN "Eroare de executie!\n" ANSI_RESET);
+      }
+      return 0;/*not ok - exit(1)*/
+    }
+}
+
+/*generate RSA public key for securing transaction*/
+int gen_pubkey(){
+  pid_t pid;	/* PID-ul procesului copil */
+  int status;	/* starea de terminare a procesului copil */
+
+  if ((pid = fork ()) < 0)
+    {
+      perror ("fork()");
+      return 0;/*not ok - exit(1)*/
+    }
+  else if (pid)			/* parinte */
+    {
+      if (wait (&status) < 0)
+	{
+	  perror ("wait()");
+	}
+	system("sed -i '/writing RSA key/d' ./pub_checker_file ; cp pub_checker_file key-cl.pub; rm pub_checker_file;");
+      	FILE * checkfile;
+      	checkfile = fopen("key-cl.pub","r");
+      	if(isEmpty(checkfile)){ return 0; }
+	  if(verbose==1){
+      	   printf (ANSI_CYAN "Comanda a fost executata.\n" ANSI_RESET);
+	}
+      return 1;/*ok - exit(0)*/
+    }
+  else	/* fiu */
+    {
+	int fd = open("pub_checker_file", O_WRONLY|O_CREAT|O_TRUNC, 0666);
+	dup2(fd, 1);
+	close(fd);
+      execlp ("openssl",
+	      /* comanda de executat (se va cauta in directoarele din PATH) */
+	      "openssl",		/* argv[0] */
+	      "rsa",	/* argv[1]*/
+	      "-in",	/* argv[2]*/
+	      "key-priv.txt",/* argv[3]*/
+	      "-pubout", /* argv[4] -  > key.pub not working*/
+	      NULL);
+      /* daca ajungem aici inseamna ca nu s-a putut executa */
+      if(verbose==1){
+      	printf (ANSI_CYAN "Eroare de executie!\n" ANSI_RESET);
+      }
+      return 0;/*not ok - exit(1)*/
+    }
+}
 
 int main (int argc, char *argv[])
 {
@@ -27,11 +185,82 @@ int main (int argc, char *argv[])
   char msg[100];		// mesajul trimis
 
   /* exista toate argumentele in linia de comanda? */
-  if (argc != 3)
+  if (argc == 4){
+	if(strcmp(argv[3], "--verbose") == 0){
+		verbose = 1;
+	}
+	else{ 
+		printf("Doar --verbose poate fi admis ca ca a treia optiune");	
+		return -1;
+	}
+  }
+  else if (argc != 3)
     {
       printf ("[client] Sintaxa: %s <adresa_server> <port>\n", argv[0]);
       return -1;
     }
+
+
+/*check openssl installed*/
+int FLG_oSSL = check_openssl();
+if(FLG_oSSL==1){
+	if(verbose == 1){
+   		printf (ANSI_CYAN "[server] openssl este instalat\n" ANSI_RESET);
+	}
+}
+else if(FLG_oSSL==0){
+	perror (ANSI_RED "[server] openssl nu este instalat.\n" ANSI_RESET);
+	printf(ANSI_RED "[server] Doriti sa instalati acum ? (Y/N): " ANSI_RESET);
+	char check;
+	scanf("%s", check);
+	if(strcmp(check, "Y")==0 || strcmp(check, "y")==0){
+		printf(ANSI_RED "[server] rulati sudo apt-get install openssl\n" ANSI_RESET);
+		exit(0);
+	}
+	else if(strcmp(check, "N")==0 || strcmp(check, "n")==0){
+		exit(0);
+	}
+	else{
+		printf("[server] raspuns instalare inexistent\n");	
+	}
+	exit(0);
+}
+else{
+	perror (ANSI_RED "[server] check_openssl returneaza valoare inexistenta.\n" ANSI_RESET);
+	exit(0);
+}
+
+/*bloc cheie privata*/
+int FLG_privKEY = gen_privkey();
+if(FLG_privKEY==1){
+	if(verbose == 1){
+   		printf (ANSI_CYAN "[server] s-a generat cheia privata openssl RSA\n" ANSI_RESET);
+	}
+}
+else if(FLG_privKEY==0){
+	printf(ANSI_RED "[server] generare cheie privata ESUATA " ANSI_RESET);
+	exit(0);
+}
+else{
+	printf(ANSI_RED "[server] generare cheie privata  returneaza valoare inexistenta.\n" ANSI_RESET);
+	exit(0);
+}
+
+/*bloc cheie publica*/
+int FLG_pubKEY = gen_pubkey();
+if(FLG_pubKEY==1){
+	if(verbose == 1){
+   		printf (ANSI_CYAN "[server] s-a generat cheia publica openssl RSA\n" ANSI_RESET);
+	}
+}
+else if(FLG_pubKEY==0){
+	printf(ANSI_RED "[server] generare cheie publica ESUATA " ANSI_RESET);
+	exit(0);
+}
+else{
+	printf(ANSI_RED "[server] generare cheie publica returneaza valoare inexistenta.\n" ANSI_RESET);
+	exit(0);
+}
 
   /* stabilim portul */
   port = atoi (argv[2]);
