@@ -182,7 +182,7 @@ int main (int argc, char *argv[])
 {
   int sd;			// descriptorul de socket
   struct sockaddr_in server;	// structura folosita pentru conectare 
-  char msg[100];		// mesajul trimis
+  char msg[500];		// mesajul trimis - o cheie publica (la una privata de 2048 -> 1700) va fi de 451
 
   /* exista toate argumentele in linia de comanda? */
   if (argc == 4){
@@ -288,7 +288,38 @@ else{
       return errno;
     }
 
-  /* citirea mesajului */
+  /****** schimbul de chei */
+  bzero (msg, 500);
+  printf ("[client] se realizeaza schimbul de chei\n ");
+  int send_fd = open("key.pub", O_RDWR, 0666);
+  read (send_fd, msg, 500);
+  close(send_fd);
+  /* trimiterea mesajului la server */
+  if (write (sd, msg, 500) <= 0)
+    {
+      perror ("[client]Eroare la write() spre server.\n");
+      return errno;
+    }
+/* citirea raspunsului dat de server 
+     (apel blocant pina cind serverul raspunde) */
+  if (read (sd, msg, 100) < 0)
+    {
+      perror ("[client]Eroare la read() de la server.\n");
+      return errno;
+    }
+  /* afisam mesajul primit */
+  printf ("[client]Mesajul primit este: %s\n", msg);
+
+  /* citirea raspunsului dat de server 
+     (apel blocant pina cind serverul raspunde) */
+  if (read (sd, msg, 500) < 0)
+  {
+      perror ("[client]Eroare la read() de la server.\n");
+      return errno;
+   }
+
+
+  /******* instructiuni - citirea mesajului */
   bzero (msg, 100);
   printf ("[client]Introduceti o adresa: ");
   fflush (stdout);

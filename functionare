@@ -15,7 +15,7 @@ TODO0.0. script instalare bash_aliases & other stuff ...
 	-> trateaza exceptie daca nu se creeaza
 
 4. [client] deschide: rc-client 127.0.0.1 <port>
-TODO5. [client] repeta pasii 2 si 3 pt client
+5. [client] repeta pasii 2 si 3 pt client
 6. schimbul de chei, prin socket: (registration)
 	-> brut, pt testare: 
 		- client: cp ../server/key.pub key-server.pub

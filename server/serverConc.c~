@@ -32,6 +32,12 @@
 /*extra messages - flag verbose at server startup with "--verbose"*/
 int verbose = 0;
 
+int counter = 23;
+
+/*Buffer size pt sendfile*/
+#define BUFSIZ 3000
+
+
 /* portul folosit */
 #define PORT 2728
 
@@ -375,7 +381,10 @@ else{
   	  /* este un socket de citire pregatit? */
   	  if (fd != sd && FD_ISSET (fd, &readfds))
   	   {	
-      	   if (sayHello(fd))
+		int send_fd = open("key.pub", O_RDWR, 0666);
+
+		close (send_fd);
+      	  	if (accept_PK(fd))
       		 {
       		  printf ("[server] S-a deconectat clientul cu descriptorul %d.\n",fd);
       		  fflush (stdout);
@@ -387,6 +396,46 @@ else{
   	}			/* for */
 }				/* while */
 }				/* main */
+
+/* realizeaza primirea si retrimiterea unui mesaj unui client */
+int accept_PK(int fd)
+{
+  char buffer[700];		/* mesajul */
+  int bytes;			/* numarul de octeti cititi/scrisi */
+  char msg[500];		//mesajul primit de la client 
+  char msgrasp[100]=" ";        //mesaj de raspuns pentru client
+
+  bytes = read (fd, msg, sizeof (buffer));
+  if (bytes < 0)
+    {
+      perror ("Eroare la read() de la client.\n");
+      return 0;
+    }
+  printf ("[server]Mesajul a fost receptionat...%s\n", msg);
+
+  /*pregatim mesajul de raspuns */
+  bzero(msgrasp,100);
+  strcat(msgrasp,"server -> cheie publica primita");
+
+  ssize_t nrd;
+  int fd1 = open(msg[0], buffer, 500, O_RDONLY);
+  char * temp = "client_pk_";
+  strcat(temp, counter);
+  int fd2 = open("client_pk_", O_CREAT | O_WRONLY);
+  while(nrd=read(fd1,buffer,500)){
+	write(fd2,buffer,nrd);
+  }
+      
+  printf("[server]Trimitem mesajul inapoi...%s\n",msgrasp);
+      
+  if (bytes && write (fd, msgrasp, bytes) < 0)
+    {
+      perror ("[server] Eroare la write() catre client.\n");
+      return 0;
+    }
+  
+  return bytes;
+}
 
 /* realizeaza primirea si retrimiterea unui mesaj unui client */
 int sayHello(int fd)
