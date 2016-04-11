@@ -1,0 +1,15 @@
+client/*.pub
+client/key-priv.txt
+client/server_pk
+client/*.bin
+client/*.c~
+client/openssl_checker_file
+client/client
+
+server/*.pub
+server/key-priv.txt
+server/server_pk
+server/*.bin
+server/*.c~
+server/openssl_checker_file
+server/server
