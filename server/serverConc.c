@@ -21,13 +21,10 @@
 #include <fcntl.h> /*pt open*/
 
 /*ANSI colours*/
-#define ANSI_RED     "\x1b[31m"
-#define ANSI_GREEN   "\x1b[32m"
-#define ANSI_YELLOW  "\x1b[33m"
-#define ANSI_BLUE    "\x1b[34m"
-#define ANSI_MAGENTA "\x1b[35m"
-#define ANSI_CYAN    "\x1b[36m"
-#define ANSI_RESET   "\x1b[0m"
+#include "../api/colours.h"
+
+/*file utilities*/
+#include "../api/utils.h"
 
 /*extra messages - flag verbose at server startup with "--verbose"*/
 int verbose = 0;
@@ -59,60 +56,8 @@ char * conv_addr (struct sockaddr_in address)
   return (str);
 }
 
-/*check if file empty -> used in check_openssl()*/
-int isEmpty(FILE *file)
-{
-    long savedOffset = ftell(file);
-    fseek(file, 0, SEEK_END);
 
-    if (ftell(file) == 0)
-    {
-        return 1;
-    }
 
-    fseek(file, savedOffset, SEEK_SET);
-    return 0;
-}
-
-/*check if openssl is installed*/
-int check_openssl(){
-  pid_t pid;	/* PID-ul procesului copil */
-  int status;	/* starea de terminare a procesului copil */
-
-  //printf ("Vom executa comanda...\n");
-
-  if ((pid = fork ()) < 0)
-    {
-      perror ("fork()");
-      return 0;/*not ok - exit(1)*/
-    }
-  else if (pid)	/* parinte */
-    {
-      if (wait (&status) < 0)
-	{
-	  perror ("wait()");
-	}
-      FILE * checkfile;
-      checkfile = fopen("openssl_checker_file","r");
-      if(isEmpty(checkfile)){ return 0; }
-      //printf ("Comanda a fost executata.\n");
-      return 1;/*ok - exit(0)*/
-    }
-  else	/* fiu */
-    {
-	int fd = open("openssl_checker_file", O_WRONLY|O_CREAT|O_TRUNC, 0666);
-	dup2(fd, 1);
-	close(fd);
-      execlp ("which",
-	      /* comanda de executat (se va cauta in directoarele din PATH) */
-	      "which",		/* argv[0] */
-	      "openssl",	/* argv[1]*/
-	      NULL);
-      /* daca ajungem aici inseamna ca nu s-a putut executa */
-      //printf ("Eroare de executie!\n");
-      return 0;/*not ok - exit(1)*/
-    }
-}
 
 /*generate RSA private key for securing transaction*/
 int gen_privkey(){
