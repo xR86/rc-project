@@ -1,44 +1,41 @@
-TODO0.0. script instalare bash_aliases & other stuff ...
-0.1. makefile din client && server => make all
-0.2. compilare bash_aliases client && server => silent_ea
-0.3. curatare alias vechi: unalias rc-server ; unalias rc-client
+TODO0.0. install script bash_aliases & other stuff ...
+0.1. makefile from client && server => make all
+0.2. compile bash_aliases client && server => silent_ea
+0.3. clean old alias: unalias rc-server ; unalias rc-client
 
-1. [server] deschide: rc-server
-	-> o singura optiune: --verbose
-2. [server] verifica daca exista openssl instalat (posibil sa fie facut cu comanda propriu zisa, cu versiune sau cu "which"
-	-> daca nu, instaleaza: apt-get install openssl
-		-> trateaza exceptie in caz ca nu se instaleaza
-	-> daca da, executa: openssl genrsa -out key-priv.txt 2048
-		-> trateaza exceptie in caz ca nu se genereaza
+1. [server] open: rc-server
+	-> parameter allowed: --verbose
+2. [server] checks if openssl is installed (check can be done either with running "openssl", running with --version parameter or with "which"):
+	-> if not, install: apt-get install openssl
+		-> handle exception if it can't install
+	-> if yes, execute: openssl genrsa -out key-priv.txt 2048
+		-> handle exception if it doesn't generate the private key
 
-3. [server] creeaza cheie publica: openssl rsa -in key-priv.txt -pubout >key.pub
-	-> trateaza exceptie daca nu se creeaza
+3. [server] create public key: openssl rsa -in key-priv.txt -pubout >key.pub
+	-> handle exception if it doesn't generate the public key
 
-4. [client] deschide: rc-client 127.0.0.1 <port>
-5. [client] repeta pasii 2 si 3 pt client
-6. schimbul de chei, prin socket: (registration) -> problema de transmitere key.pub a serverului spre client (la server e ok, la client ajunge cheia publica personala - cea transmisa inainte prin sd -> trebuie facut flush pe socket ???)
-	-> brut, pt testare: 
+4. [client] open: rc-client 127.0.0.1 <port>
+5. [client] repeat steps 2 and 3 for client
+6. key exchange, through socket: (registration) -> problem of sending key.pub of the server to the client (server message is ok, client receives (part of) personal public key - that was sent previously through sd -> flush should be made for socket ???)
+	-> brute, for testing purposes: 
 		- client: cp ../server/key.pub key-server.pub
 		- server: cp ../client/key.pub key-client.pub
-	-> cum se vor salva cheile de client pe server? (name policy -> fragment de MAC/IP adaugat la sfarsitul numelui cheii)
+	-> how will client public keys be saved on the server ? (name policy -> fragment of MAC/IP appended to the key name)
 
-7. [server] criptarea mesajului de transmis prin: echo "optiuni: ..." | openssl rsautl -pubin -inkey key-client.pub -encrypt >fisier.bin
+7. [server] encryption of the message to send through: echo "download options: ..." | openssl rsautl -pubin -inkey key-client.pub -encrypt >fisier.bin
 
-8. [server] transmis prin socket la client
-	-> brut, pt testare: cp ../server/fisier.bin fisier-server.bi
-9. [client] decriptare: openssl rsautl -inkey key-priv.txt -decrypt <fisier-client.bin #nu este neaparat nevoie de redirectare de output: >fisier-decriptat.txt
-10. [client] alege optiunea de download, cripteaza si trimite serverului, serverul va transmite prompturi clientului:
-	optiune (wget or get): __
+8. [server] send through socket to client
+	-> brute, for testing purposes: cp ../server/fisier.bin fisier-server.bin
+9. [client] decrypt: openssl rsautl -inkey key-priv.txt -decrypt <fisier-client.bin #output redirect isn't really necessary ? : >fisier-decriptat.txt
+10. [client] choose download option, encrypt and send to server, server will send prompts to the client:
+	option (wget or get): __
 	depth(wget only)(not 0, 1-5): __
 	files-only(Y/N): ___
 
-wgetTODO11. cauta fisier stackoverflow cu metode de rezolvare, paseaza prin execlp int-urile de mai sus
+wgetTODO11. search stackoverflow article with possible solutions, pass to execlp previously mentioned commands
 
-GET-TODO11. parseaza pt <a href="stuff"
-		-> incearca sa mimezi depth si files-only de la wget prin GET
-
-
-15?-fa interfata qt-webkit
+GET-TODO11. parse for <a href="stuff">
+		-> try to mimic depth and files-only from wget through GET
 
 
-
+15? - make qt-webkit interface

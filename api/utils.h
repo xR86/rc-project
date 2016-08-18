@@ -1,5 +1,5 @@
 
-/*check if file empty -> used in check_openssl()*/
+/*check if file is empty -> used in check_openssl()*/
 int isEmpty(FILE *file)
 {
     long savedOffset = ftell(file);
@@ -16,17 +16,15 @@ int isEmpty(FILE *file)
 
 /*check if openssl is installed*/
 int check_openssl(){
-  pid_t pid;  /* PID-ul procesului copil */
-  int status; /* starea de terminare a procesului copil */
-
-  //printf ("Vom executa comanda...\n");
+  pid_t pid;  /* PID of child process */
+  int status; /* termination state of child process */
 
   if ((pid = fork ()) < 0)
     {
       perror ("fork()");
       return 0;/*not ok - exit(1)*/
     }
-  else if (pid) /* parinte */
+  else if (pid) /* parent */
     {
       if (wait (&status) < 0)
   {
@@ -35,21 +33,23 @@ int check_openssl(){
       FILE * checkfile;
       checkfile = fopen("openssl_checker_file","r");
       if(isEmpty(checkfile)){ return 0; }
-      //printf ("Comanda a fost executata.\n");
+      //printf ("Command executed.\n");
+
       return 1;/*ok - exit(0)*/
     }
-  else  /* fiu */
+  else  /* child */
     {
   int fd = open("openssl_checker_file", O_WRONLY|O_CREAT|O_TRUNC, 0666);
   dup2(fd, 1);
   close(fd);
       execlp ("which",
-        /* comanda de executat (se va cauta in directoarele din PATH) */
+        /* command to execute (will search for folders in PATH) */
         "which",    /* argv[0] */
         "openssl",  /* argv[1]*/
         NULL);
-      /* daca ajungem aici inseamna ca nu s-a putut executa */
-      //printf ("Eroare de executie!\n");
+      /* will get here if execlp failed */
+      printf ("Execution error !\n");
+
       return 0;/*not ok - exit(1)*/
     }
 }

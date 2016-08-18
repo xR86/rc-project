@@ -1,3 +1,5 @@
+
+# Client extra files
 client/*.pub
 client/key-priv.txt
 client/server_pk
@@ -6,6 +8,7 @@ client/*.c~
 client/openssl_checker_file
 client/client
 
+# Server extra files
 server/*.pub
 server/key-priv.txt
 server/server_pk
