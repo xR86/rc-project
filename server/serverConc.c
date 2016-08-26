@@ -1,11 +1,10 @@
-/* servTCPCSel.c - Exemplu de server TCP concurent 
+/* concurrent TCP server
    
-   Asteapta un "nume" de la clienti multipli si intoarce clientilor sirul
-   "Hello nume" corespunzator; multiplexarea intrarilor se realizeaza cu select().
-   
-   Cod sursa preluat din [Retele de Calculatoare,S.Buraga & G.Ciobanu, 2003] si modificat de 
-   Lenuta Alboaie  <adria@infoiasi.ro> (c)2009
-   
+   Initial server implementation from Lenuta Alboaie  <adria@infoiasi.ro> (c)2009
+    (based on [Retele de Calculatoare,S.Buraga & G.Ciobanu, 2003])
+
+   Initial purpose: Server waits for a "name" from multiple clients and returns to clients
+   "Hello <<name>>" accordingly; multiplexing made with select().
 */
 
 #include <sys/types.h>
@@ -17,8 +16,8 @@
 #include <stdio.h>
 #include <arpa/inet.h>
 #include <string.h>
-#include <sys/stat.h> /*pt open*/
-#include <fcntl.h> /*pt open*/
+#include <sys/stat.h> /*for open*/
+#include <fcntl.h> /*for open*/
 
 /*ANSI colours*/
 #include "../api/colours.h"
@@ -36,20 +35,20 @@ int CLcounter = 23;
 #define BUFSIZ 3000
 
 
-/* portul folosit */
+/* used port for server */
 #define PORT 2728
 
-extern int errno;	/* eroarea returnata de unele apeluri */
+extern int errno;	/* returned error by some calls */
 
-/* functie de convertire a adresei IP a clientului in sir de caractere */
+/* function that converts the client IP address in char array */
 char * conv_addr (struct sockaddr_in address)
 {
   static char str[25];
   char port[7];
 
-  /* adresa IP a clientului */
+  /* client IP */
   strcpy (str, inet_ntoa (address.sin_addr));	
-  /* portul utilizat de client */
+  /* client port */
   bzero (port, 7);
   sprintf (port, ":%d", ntohs (address.sin_port));	
   strcat (str, port);
@@ -61,15 +60,15 @@ char * conv_addr (struct sockaddr_in address)
 
 /*generate RSA private key for securing transaction*/
 int gen_privkey(){
-  pid_t pid;	/* PID-ul procesului copil */
-  int status;	/* starea de terminare a procesului copil */
+  pid_t pid;	/* child process PID */
+  int status;	/* child termination status */
 
   if ((pid = fork ()) < 0)
     {
       perror ("fork()");
       return 0;/*not ok - exit(1)*/
     }
-  else if (pid)			/* parinte */
+  else if (pid)			/* parent process */
     {
       if (wait (&status) < 0)
 	{
@@ -79,23 +78,23 @@ int gen_privkey(){
       checkfile = fopen("key-priv.txt","r");
       if(isEmpty(checkfile)){ return 0; }
 	if(verbose==1){
-      	   printf (ANSI_CYAN "Comanda a fost executata.\n" ANSI_RESET);
+      	   printf (ANSI_CYAN "Command has been executed.\n" ANSI_RESET);
 	}
       return 1;/*ok - exit(0)*/
     }
-  else	/* fiu */
+  else	/* child process */
     {
       execlp ("openssl",
-	      /* comanda de executat (se va cauta in directoarele din PATH) */
+	      /* command to execute (will search in PATH folders) */
 	      "openssl",		/* argv[0] */
 	      "genrsa",	/* argv[1]*/
 	      "-out",	/* argv[2]*/
 	      "key-priv.txt",/* argv[3]*/
 	      "2048",	/* argv[4]*/
 	      NULL);
-      /* daca ajungem aici inseamna ca nu s-a putut executa */
+      /* if we get here, execlp failed */
       if(verbose==1){
-      	printf (ANSI_CYAN "Eroare de executie!\n" ANSI_RESET);
+      	printf (ANSI_CYAN "Execution error!\n" ANSI_RESET);
       }
       return 0;/*not ok - exit(1)*/
     }
@@ -103,15 +102,15 @@ int gen_privkey(){
 
 /*generate RSA public key for securing transaction*/
 int gen_pubkey(){
-  pid_t pid;	/* PID-ul procesului copil */
-  int status;	/* starea de terminare a procesului copil */
+  pid_t pid;	/* child process PID */
+  int status;	/* child termination status */
 
   if ((pid = fork ()) < 0)
     {
       perror ("fork()");
       return 0;/*not ok - exit(1)*/
     }
-  else if (pid)			/* parinte */
+  else if (pid)			/* parent process */
     {
       if (wait (&status) < 0)
 	{
@@ -122,46 +121,46 @@ int gen_pubkey(){
       	checkfile = fopen("key.pub","r");
       	if(isEmpty(checkfile)){ return 0; }
 	  if(verbose==1){
-      	   printf (ANSI_CYAN "Comanda a fost executata.\n" ANSI_RESET);
+      	   printf (ANSI_CYAN "Command has been executed.\n" ANSI_RESET);
 	}
       return 1;/*ok - exit(0)*/
     }
-  else	/* fiu */
+  else	/* child process */
     {
 	int fd = open("pub_checker_file", O_WRONLY|O_CREAT|O_TRUNC, 0666);
 	dup2(fd, 1);
 	close(fd);
       execlp ("openssl",
-	      /* comanda de executat (se va cauta in directoarele din PATH) */
+	      /* command to execute (will search in PATH folders) */
 	      "openssl",		/* argv[0] */
 	      "rsa",	/* argv[1]*/
 	      "-in",	/* argv[2]*/
 	      "key-priv.txt",/* argv[3]*/
 	      "-pubout", /* argv[4] -  > key.pub not working*/
 	      NULL);
-      /* daca ajungem aici inseamna ca nu s-a putut executa */
+      /* if we get here, execlp failed */
       if(verbose==1){
-      	printf (ANSI_CYAN "Eroare de executie!\n" ANSI_RESET);
+      	printf (ANSI_CYAN "Execution error!\n" ANSI_RESET);
       }
       return 0;/*not ok - exit(1)*/
     }
 }
 
-/* programul */
+/* main body */
 int
 main (int argc, char *argv[])
 {
-  struct sockaddr_in server;	/* structurile pentru server si clienti */
+  struct sockaddr_in server;	/* server and client structure */
   struct sockaddr_in from;
-  fd_set readfds;		/* multimea descriptorilor de citire */
-  fd_set actfds;		/* multimea descriptorilor activi */
-  struct timeval tv;		/* structura de timp pentru select() */
-  int sd, client, wsd;		/* descriptori de socket */
-  int optval=1; 			/* optiune folosita pentru setsockopt()*/ 
-  int fd;			/* descriptor folosit pentru 
-				   parcurgerea listelor de descriptori */
-  int nfds;			/* numarul maxim de descriptori */
-  int len;			/* lungimea structurii sockaddr_in */
+  fd_set readfds;		/* read file descriptors set */
+  fd_set actfds;		/* active file descriptors set */
+  struct timeval tv;		/* time structure for select() */
+  int sd, client, wsd;		/* socket descriptors */
+  int optval=1; 			/* option used for setsockopt()*/ 
+  int fd;			/* descriptor used for 
+				   iterating descriptor lists */
+  int nfds;			/* maximum number of descriptors */
+  int len;			/* length of sockaddr_in structure */
 
 if (argc == 2){
 	if(strcmp(argv[1], "--verbose") == 0){
@@ -173,107 +172,107 @@ if (argc == 2){
 int FLG_oSSL = check_openssl();
 if(FLG_oSSL==1){
 	if(verbose == 1){
-   		printf (ANSI_CYAN "[server] openssl este instalat\n" ANSI_RESET);
+   		printf (ANSI_CYAN "[server] openssl is installed\n" ANSI_RESET);
 	}
 }
 else if(FLG_oSSL==0){
-	perror (ANSI_RED "[server] openssl nu este instalat.\n" ANSI_RESET);
-	printf(ANSI_RED "[server] Doriti sa instalati acum ? (Y/N): " ANSI_RESET);
+	perror (ANSI_RED "[server] openssl is not installed\n" ANSI_RESET);
+	printf(ANSI_RED "[server] Do you wish to install it now ? (Y/N): " ANSI_RESET);
 	char check;
 	scanf("%s", check);
 	if(strcmp(check, "Y")==0 || strcmp(check, "y")==0){
-		printf(ANSI_RED "[server] rulati sudo apt-get install openssl\n" ANSI_RESET);
+		printf(ANSI_RED "[server] run sudo apt-get install openssl\n" ANSI_RESET);
 		exit(0);
 	}
 	else if(strcmp(check, "N")==0 || strcmp(check, "n")==0){
 		exit(0);
 	}
 	else{
-		printf("[server] raspuns instalare inexistent\n");	
+		printf("[server] invalid installation response\n");	
 	}
 	exit(0);
 }
 else{
-	perror (ANSI_RED "[server] check_openssl returneaza valoare inexistenta.\n" ANSI_RESET);
+	perror (ANSI_RED "[server] check_openssl returns invalid value.\n" ANSI_RESET);
 	exit(0);
 }
 
-/*bloc cheie privata*/
+/*private key body*/
 int FLG_privKEY = gen_privkey();
 if(FLG_privKEY==1){
 	if(verbose == 1){
-   		printf (ANSI_CYAN "[server] s-a generat cheia privata openssl RSA\n" ANSI_RESET);
+   		printf (ANSI_CYAN "[server] private openssl RSA key has been generated\n" ANSI_RESET);
 	}
 }
 else if(FLG_privKEY==0){
-	printf(ANSI_RED "[server] generare cheie privata ESUATA " ANSI_RESET);
+	printf(ANSI_RED "[server] private key generation failed" ANSI_RESET);
 	exit(0);
 }
 else{
-	printf(ANSI_RED "[server] generare cheie privata  returneaza valoare inexistenta.\n" ANSI_RESET);
+	printf(ANSI_RED "[server] private key generation returns invalid response\n" ANSI_RESET);
 	exit(0);
 }
 
-/*bloc cheie publica*/
+/*public key body*/
 int FLG_pubKEY = gen_pubkey();
 if(FLG_pubKEY==1){
 	if(verbose == 1){
-   		printf (ANSI_CYAN "[server] s-a generat cheia publica openssl RSA\n" ANSI_RESET);
+   		printf (ANSI_CYAN "[server] public openssl RSA key has been generated\n" ANSI_RESET);
 	}
 }
 else if(FLG_pubKEY==0){
-	printf(ANSI_RED "[server] generare cheie publica ESUATA " ANSI_RESET);
+	printf(ANSI_RED "[server] public key generation failed" ANSI_RESET);
 	exit(0);
 }
 else{
-	printf(ANSI_RED "[server] generare cheie publica returneaza valoare inexistenta.\n" ANSI_RESET);
+	printf(ANSI_RED "[server] public key generation returns invalid response\n" ANSI_RESET);
 	exit(0);
 }
 
 
-  /* creare socket */
+  /* create socket */
   if ((sd = socket (AF_INET, SOCK_STREAM, 0)) == -1)
     {
-      perror ("[server] Eroare la socket().\n");
+      perror ("[server] socket() error.\n");
       return errno;
     }
-  /*creare socket pt download*/
+  /*create download socket*/
   if ((wsd = socket (AF_INET, SOCK_STREAM, 0)) == -1)
     {
-      perror ("[server] Eroare la socket().\n");
+      perror ("[server] socket() error.\n");
       return errno;
     }
 
-  /*setam pentru socket optiunea SO_REUSEADDR */ 
+  /*set socket option SO_REUSEADDR */ 
   setsockopt(sd, SOL_SOCKET, SO_REUSEADDR,&optval,sizeof(optval));
 
-  /* pregatim structurile de date */
+  /* prepare data structure */
   bzero (&server, sizeof (server));
 
-  /* umplem structura folosita de server */
+  /* set server structure */
   server.sin_family = AF_INET;
   server.sin_addr.s_addr = htonl (INADDR_ANY);
   server.sin_port = htons (PORT);
 
-  /* atasam socketul */
+  /* socket attach */
   if (bind (sd, (struct sockaddr *) &server, sizeof (struct sockaddr)) == -1)
     {
-      perror ("[server] Eroare la bind().\n");
+      perror ("[server] bind() error\n");
       return errno;
     }
 
-  /* punem serverul sa asculte daca vin clienti sa se conecteze */
+  /* server listens for clients */
   if (listen (sd, 5) == -1)
     {
-      perror ("[server] Eroare la listen().\n");
+      perror ("[server] listen() error\n");
       return errno;
     }
   
-  /* completam multimea de descriptori de citire */
-  FD_ZERO (&actfds);		/* initial, multimea este vida */
-  FD_SET (sd, &actfds);		/* includem in multime socketul creat */
+  /* set file descriptor set */
+  FD_ZERO (&actfds);		/* initially, set is empty */
+  FD_SET (sd, &actfds);		/* we include the newly-created socket in the set */
 
-  tv.tv_sec = 1;		/* se va astepta un timp de 1 sec. */
+  tv.tv_sec = 1;		/* 1s wait time. */
   tv.tv_usec = 0;
   
   /* valoarea maxima a descriptorilor folositi */
@@ -409,30 +408,30 @@ int send_PK(int fd)
      (apel blocant pina cind clientul raspunde) */
   if (read (fd, msgrasp, 100) < 0)
     {
-      perror ("[client]Eroare la read() de la server.\n");
+      perror ("[client]Error: read() from server\n");
       return 0;
     }
-  /* afisam mesajul primit */
-  printf ("[client]Mesajul primit este: %s\n", msgrasp);
+  /* displays received message */
+  printf ("[client]Received message is: %s\n", msgrasp);
   
   return 1;
 }
 
-/* realizeaza primirea si retrimiterea unui mesaj unui client */
+/* receives and sends message to client */
 int sayHello(int fd)
 {
-  char buffer[100];		/* mesajul */
-  int bytes;			/* numarul de octeti cititi/scrisi */
-  char msg[100];		//mesajul primit de la client 
-  char msgrasp[100]=" ";        //mesaj de raspuns pentru client
+  char buffer[100];		/* message */
+  int bytes;			/* no bytes read/write */
+  char msg[100];		//message received from client 
+  char msgrasp[100]=" ";        //response message for client
 
   bytes = read (fd, msg, sizeof (buffer));
   if (bytes < 0)
     {
-      perror ("Eroare la read() de la client.\n");
+      perror ("Error at read() from client message.\n");
       return 0;
     }
-  printf ("[server]Mesajul a fost receptionat...%s\n", msg);
+  printf ("[server]Message received...%s\n", msg);
       /*
      web_socket = socket(AF_INET, SOCK_STREAM, 0);
      memset(&server_address, 0, sizeof(struct sockaddr_in));
@@ -442,16 +441,16 @@ int sayHello(int fd)
      indicator = connect(web_socket, (struct sockaddr *) &server_address, sizeof(server_address))
 */
 
-  /*pregatim mesajul de raspuns */
+  /*prepare response message */
   bzero(msgrasp,100);
   strcat(msgrasp,"Hello ");
   strcat(msgrasp,msg);
       
-  printf("[server]Trimitem mesajul inapoi...%s\n",msgrasp);
+  printf("[server]Message is sent to client ...%s\n",msgrasp);
       
   if (bytes && write (fd, msgrasp, bytes) < 0)
     {
-      perror ("[server] Eroare la write() catre client.\n");
+      perror ("[server] Error at write() to client\n");
       return 0;
     }
   

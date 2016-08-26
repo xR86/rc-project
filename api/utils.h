@@ -17,7 +17,7 @@ int isEmpty(FILE *file)
 /*check if openssl is installed*/
 int check_openssl(){
   pid_t pid;  /* PID of child process */
-  int status; /* termination state of child process */
+  int status; /* termination status of child process */
 
   if ((pid = fork ()) < 0)
     {
