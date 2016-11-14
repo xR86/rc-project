@@ -1,18 +1,18 @@
 
 # Client extra files
-client/*.pub
-client/key-priv.txt
-client/server_pk
-client/*.bin
-client/*.c~
-client/openssl_checker_file
-client/client
+old/client/*.pub
+old/client/key-priv.txt
+old/client/server_pk
+old/client/*.bin
+old/client/*.c~
+old/client/openssl_checker_file
+old/client/clientold/
 
 # Server extra files
-server/*.pub
-server/key-priv.txt
-server/server_pk
-server/*.bin
-server/*.c~
-server/openssl_checker_file
-server/server
+old/server/*.pub
+old/server/key-priv.txt
+old/server/server_pk
+old/server/*.bin
+old/server/*.c~
+old/server/openssl_checker_file
+old/server/server
