@@ -1,4 +1,7 @@
 
+# backups
+demo/back/*
+
 # Client extra files
 old/client/*.pub
 old/client/key-priv.txt
@@ -16,3 +19,4 @@ old/server/*.bin
 old/server/*.c~
 old/server/openssl_checker_file
 old/server/server
+

@@ -5,4 +5,6 @@ Computer Networks Project
 
 ### :exclamation: Notes:
 + old project moved to `old/`
-+ new project specs and demo coming soon
++ new project specs and demo coming soon:  
+  + LNCS documentation in `docs/`  
+  + demo files in `demo/`  
