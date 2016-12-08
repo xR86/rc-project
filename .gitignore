@@ -1,6 +1,7 @@
 
 # backups
 demo/back/*
+libssh/*
 
 # Client extra files
 old/client/*.pub
