@@ -3,6 +3,8 @@
 
 
 \documentclass{llncs}
+\usepackage{graphicx}
+% \graphicspath{ {images/} }
 
 \begin{document}
 
@@ -37,7 +39,9 @@ GridAdmin offers a solution for orchestration of VMs - both on managed servers a
 
 \section{Introduction}
 %
-
+GridAdmin offers a solution for network administration by sending commands through openssh-server on the slave machines (or respective API available for cloud platforms), and with a C server as master.
+\\\\
+Targeted functionality similar to Python's Fabric (\url{http://www.fabfile.org/}).
 %
 \subsection{Subsection}
 %
@@ -49,11 +53,33 @@ GridAdmin offers a solution for orchestration of VMs - both on managed servers a
 %
 \section{Technologies used}
 %
-(e.g. TCP, UDP... - caracteristicile care au fost utilizate in cadrul proiectului)
+
+\subsection{Server-side}
+
+The project uses C extended with Python for the concurrent TCP server. 
+
+\subsection{Client-side}
+
+The project uses Python and PyQt4, the interface being modeled with web technologies as HTML, CSS, Javascript, Angular.js.
+
 %
 \section{Application Architecture}
 %
-(conceptele implicate, diagrama aplicatiei)
+The application makes use of the client-server model for interfacing and master-slave model for control.
+
+\begin{figure}[h]
+\includegraphics[scale=0.7]{app-layer.png}
+\centering
+\caption{Application Layer architecture}
+\end{figure}
+
+The application flow is:
+\begin{itemize}
+  \item cloud provider (especially IaaS) agnostic (offering support for Google Cloud Platform and/or Microsoft Azure)
+  \item forking the server and hosting it in different geographical locations and infrastructure backbones - for availability / legal reasons
+  \item 
+\end{itemize}
+
 %
 \section{Implementation details}
 %
@@ -61,8 +87,23 @@ GridAdmin offers a solution for orchestration of VMs - both on managed servers a
 %
 \section{Conclusions}
 %
-(e.g. cum ar putea fi imbunatatita solutia propusa? )
-%
+(e.g. cum ar putea fi imbunatatita solutia propusa? )\\
+\\
 
+The solution could be extended to be: 
+
+\begin{itemize}
+  \item cloud provider (especially IaaS) agnostic (offering support for Google Cloud Platform and/or Microsoft Azure)
+  \item forking the server and hosting it in different geographical locations and infrastructure backbones - for availability / legal reasons
+  \item 
+\end{itemize}
+
+.
+%
+\\
+\\
+\\
+Solution will be made available at the following address:
+ \begin{center}\url{https://github.com/xR86/rc-project}\end{center}
 
 \end{document}
