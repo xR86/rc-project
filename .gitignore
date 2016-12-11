@@ -1,4 +1,8 @@
 
+#compiled
+demo/libssh/libss-ex
+demo/libssh/libss
+
 # backups
 demo/back/*
 libssh/*
