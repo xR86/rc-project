@@ -18,3 +18,7 @@ Computer Networks Project
   + `/etc/ssh/sshd_config/`
   + `sudo service ssh restart`
 
+### Useful: 
++ [github.com/msanders/wol.c](https://github.com/msanders/wol.c/blob/master/wol.c)
++ [libssh tutorial](http://api.libssh.org/master/libssh_tutorial.html), [libssh + public key](http://api.libssh.org/master/libssh_tutor_authentication.html)
++ [api.libssh.org/master/group__libssh__auth](http://api.libssh.org/master/group__libssh__auth.html)

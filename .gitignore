@@ -3,8 +3,6 @@
 demo/libssh/libss-ex
 demo/libssh/libss
 
-demo/Vagrantfile
-demo/setup.sh
 demo/.vagrant/*
 
 
