@@ -17,6 +17,11 @@ Computer Networks Project
 	+ `ssh-copy-id remoteuser@remotehostIP` - will add the id to known hosts
   + `/etc/ssh/sshd_config/`
   + `sudo service ssh restart`
+  + `paramiko-demo.py`:
+  + install deps first ( [source](https://stackoverflow.com/questions/31569339/importerror-no-module-named-cryptography-hazmat-backends-boxsdk-on-mac) ):
+    + `sudo apt-get install libffi-dev` ([what is that ?](https://sourceware.org/libffi/); needed for crypto package below)
+    + `sudo pip install cryptography` (needed for `paramiko` package)
+  + `pip install paramiko`
 
 ### Useful: 
 + [github.com/msanders/wol.c](https://github.com/msanders/wol.c/blob/master/wol.c)

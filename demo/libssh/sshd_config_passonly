@@ -60,7 +60,7 @@ PasswordAuthentication yes
 #KerberosTicketCleanup yes
 
 # GSSAPI options
-#GSSAPIAuthentication no
+GSSAPIAuthentication no
 #GSSAPICleanupCredentials yes
 
 X11Forwarding yes

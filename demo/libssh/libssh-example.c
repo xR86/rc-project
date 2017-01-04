@@ -40,9 +40,9 @@ int main() {
     if (rc != SSH_OK) error(session);
 
     printf("Password Autentication...\n");
-    //rc = ssh_userauth_password(session, "NULL", "xR86");
+    rc = ssh_userauth_password(session, "xR86", "parola");
     //rc = ssh_userauth_password(session, NULL, "parola");
-    rc = ssh_userauth_publickey_auto(session, "xR86", NULL);
+    //rc = ssh_userauth_publickey_auto(session, "xR86", NULL);
     if (rc != SSH_AUTH_SUCCESS) error(session);
 
     printf("Channel...\n");

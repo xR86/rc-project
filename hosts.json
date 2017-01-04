@@ -1,0 +1,16 @@
+{
+	"password-only": [
+		{
+			"tag": "localhost",
+			"address": "127.0.0.1",
+			"username": "xr86",
+			"password": "parola"
+		},
+		{
+			"tag": "centos",
+			"address": "192.168.100.7",
+			"username": "xr86",
+			"password": "parola"
+		}
+	]
+}
