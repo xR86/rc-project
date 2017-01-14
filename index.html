@@ -1,0 +1,146 @@
+<html>
+<head>
+	<title>GridAdmin</title>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+ -->
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+
+	<!-- Material Design -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/bootstrap-material-design.min.css" />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/css/ripples.min.css" />
+
+	<style>
+		.row form-group input.cmd-input.form-control,
+		#inputLarge{
+		  background-color: #111;
+		  color: #FFF;
+		  padding: 0px 5px;
+		}
+
+		.col-md-offset-05{
+		  margin-left: 4%;
+		}
+
+		.run-container{
+		  margin-top: 5rem;
+		}
+
+		.panel-heading .checkbox{
+		  display: inline-block;
+		}
+
+		.dock-bottom{
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+		}
+	</style>
+
+</head>
+<body>
+	<!-- <div class="container-fluid">
+		<h1>Sample app</h1>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-4">
+			<a href="BackEnd.say_hello_world" data-bind="true">
+			  Click to say "Hello, world" {{ username }}
+			</a>
+		</div>
+	</div> -->
+	<!-- Latest compiled and minified CSS -->
+
+
+	<p>&nbsp;</p>
+
+	<div class="row container-fluid">
+	  <div class="col-md-3 col-sm-3 col-xs-3">
+	    <div class="panel panel-primary">
+	      <div class="panel-heading">Centos VM
+	        <!-- <div class="checkbox">
+                <label>
+                  <input type="checkbox"><span class="checkbox-material"><span class="check"></span></span>
+                </label>
+	        </div> -->
+
+	        <!--         <div class="form-group" style="display: inline-block; margin: 0; padding: 0.1rem; margin-right: -1rem">
+	           <label>Select
+	            <input type="checkbox"> 
+	          </label>
+	        </div> -->
+
+	      </div>
+	      <div class="panel-body">
+	        <div class="">
+	          <img class="col-md-6 img-responsive" src="https://www.rosehosting.com/blog/wp-content/uploads/2016/04/centos_logo.png" />
+	          <!-- <p><b>InstanceType</b>: t2.micro </p> -->
+
+	        </div>
+	        <!-- <div class="col-md-6">
+	          <p><b>ImageId (ami)</b>: ami-26c43200 </p>
+	          <p><b>KeyName</b>: DevopsKeys </p>
+	          <p><b>Security Group</b>: dev-group </p>
+	        </div> -->
+	        <!-- end col-md-6 -->
+	      </div>
+	    </div>
+	  </div>
+	  <div class="col-md-3 col-sm-3 col-xs-3">
+	    <div class="panel panel-danger">
+	      <div class="panel-heading">Ubuntu VM</div>
+	      <div class="panel-body">
+	        <img class="col-md-5 img-responsive" src="https://design.ubuntu.com/wp-content/uploads/ubuntu-logo112.png" />
+	        <p class="col-md-5"></p>
+	      </div>
+	    </div>
+	  </div>
+	  <div class="col-md-3 col-sm-3 col-xs-3">
+	    <div class="panel panel-info">
+	      <div class="panel-heading">Localhost VM</div>
+	      <div class="panel-body">
+	        <img class="col-md-4 img-responsive" src="https://cdn.tutsplus.com/mac/uploads/2013/06/icon_terminal_2x.jpg" />
+	        <p class="col-md-5"></p>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<div class="panel container-fluid dock-bottom">
+	  <div class="row container-fluid">
+	    <div class="form-group col-md-6">
+	      <div class="">
+	        <label class="control-label" for="inputLarge">Run command</label>
+	        <input class="cmd-input form-control input-lg" type="text" id="inputLarge" placeholder="echo Hello World">
+	      </div>
+	    </div>
+	    <div class="col-md-2 run-container">
+	      <a href="#" class="btn btn-raised btn-info">Run</a>
+	    </div>
+	    
+	  </div>
+	  <div class="row container-fluid">
+	    <div class="col-md-2">
+	      <a href="#" class="btn btn-raised btn-success">Launch all instances</a>
+	    </div>
+	    <div class="col-md-2 col-md-offset-05">
+	      <a href="#" class="btn btn-raised btn-warning">Close all instances</a>
+	    </div>
+	  </div>
+	</div>
+
+
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script> -->
+</body>
+</html>

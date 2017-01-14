@@ -1,13 +1,18 @@
 
-#compiled
+# Ignore these
+**/safe_*
+**/new_*
+
+# Compiled
 demo/libssh/libss-ex
 demo/libssh/libss
+demo/extending/build
+demo/embedding/*
 
 demo/.vagrant/*
 
 
-# backups
-demo/*
+# Backups
 demo/back/*
 libssh/*
 
