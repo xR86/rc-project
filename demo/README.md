@@ -1,6 +1,28 @@
 # rcproj
 Computer Networks Project
 
+### Dockerfile / Vagrantfile
+
+sudo docker build -t "test" .
+sudo docker run -p 8081:8081 -d "test"
+
+sudo docker build -t test .
+sudo docker run -name test1 -i -t test
+
+sudo docker pull salttest/ubuntu-12.04
+
+
+----
+
+`sudo apt-get install -y openssh-client openssh-server`
+
+`sudo docker images`
+`sudo docker run -i -t salttest/ubuntu-12.04 /bin/bash` - ubuntu:12.04 e shitty
+
+
+`sudo docker inspect romantic_hoover | grep "IPAddress"`
+`cat /etc/*release` - extra check
+
 
 ### Folder structure:
 + `client-htmlpy/` - htmlpy example for client

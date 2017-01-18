@@ -9,11 +9,15 @@ demo/libssh/libss
 demo/extending/build
 demo/embedding/*
 
+A-B/demo-lab7/client
+A-B/demo-lab7/server
+
 demo/.vagrant/*
 
 
 # Backups
 demo/back/*
+demo/termux-sync/*
 libssh/*
 
 # Client extra files
