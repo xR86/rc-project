@@ -8,8 +8,6 @@
 	<!-- Optional theme -->
 	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
  -->
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
 
@@ -59,8 +57,28 @@
 	</div> -->
 	<!-- Latest compiled and minified CSS -->
 
-
+	<div class="panel container-fluid">
+	  <div class="row container-fluid">
+	    <div class="col-md-2">
+	      <a href="#" class="btn btn-raised btn-success">Load new json</a>
+	    </div>
+	    <div class="col-md-2 col-md-offset-05">
+	      <p>Last added date: <i id="json-date"></i> </p>
+	    </div>
+	  </div>
+	</div>
 	<p>&nbsp;</p>
+
+	
+	<form class="form-horizontal container-fluid" style="margin-left:15px">
+    	<div class="form-group">
+			<div class="checkbox">
+		      <label>
+		        <input type="checkbox"> Select all
+		      </label>
+		    </div>
+		</div>
+	</form>
 
 	<div class="row container-fluid">
 	  <div class="col-md-3 col-sm-3 col-xs-3">
@@ -137,10 +155,16 @@
 	  </div>
 	</div>
 
-
-	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/material.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.9/js/ripples.min.js"></script>
+
+	<script>
+		$.material.init()
+	</script>
 </body>
 </html>

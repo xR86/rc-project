@@ -1,9 +1,13 @@
 
+# Temporary
+demo/parallel/*
+
 # Ignore these
 **/safe_*
 **/new_*
 
 # Compiled
+**/*.bin
 demo/libssh/libss-ex
 demo/libssh/libss
 demo/extending/build
