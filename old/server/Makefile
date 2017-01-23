@@ -1,8 +1,8 @@
-#Makefile for client
+#Makefile for server
 SHELL = /bin/bash #use bash syntax
 #SILENT_EA = 'source ~/.bash_aliases && source $HOME/.bash_aliases && echo "[silent]aliases sourced --ok."'
 
-#alias rc-client='cd /home/xr-86/httpreq/client/ ; ./client' 
+#alias rc-server='cd /home/xr-86/httpreq/server/ ; ./server' 
 #current_loc=$$(pwd) | stuff | $$current_loc
 #shopt -s expand_aliases ;
 # echo `${BASH_ALIASES[silent_ea]}`  sau $(SILENT_EA)
@@ -11,11 +11,11 @@ SHELL = /bin/bash #use bash syntax
 
 all: compile alias
 
-compile: client.c
-	gcc client.c -o client
+compile: serverConc.c
+	gcc serverConc.c -o server.bin
 
 alias: 
-	echo "alias rc-client='cd /home/xr-86/httpreq/client/ ; ./client'" >> ~/.bash_aliases ; \
-
+	echo "alias rc-server='cd /home/xr-86/httpreq/server/ ; ./server.bin'" >> ~/.bash_aliases ; \
+	
 clean:
-	unalias rc-client
+	unalias rc-server

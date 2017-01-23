@@ -1,44 +1,27 @@
 
 # Temporary
 demo/parallel/*
+demo/embedding/*
 
-# Ignore these
+# Ignore these tags
 **/safe_*
 **/new_*
 
 # Compiled
 **/*.bin
-demo/libssh/libss-ex
-demo/libssh/libss
 demo/extending/build
-demo/embedding/*
-
-A-B/demo-lab7/client
-A-B/demo-lab7/server
-
-demo/.vagrant/*
-
 
 # Backups
 demo/back/*
 demo/termux-sync/*
+
+# Misc
+demo/.vagrant/*
 libssh/*
 
-# Client extra files
-old/client/*.pub
-old/client/key-priv.txt
-old/client/server_pk
-old/client/*.bin
-old/client/*.c~
-old/client/openssl_checker_file
-old/client/clientold/
 
-# Server extra files
-old/server/*.pub
-old/server/key-priv.txt
-old/server/server_pk
-old/server/*.bin
-old/server/*.c~
-old/server/openssl_checker_file
-old/server/server
-
+# Old project
+old/**/*_pk
+old/**/*.pub
+old/**/openssl_checker_file
+old/**/key-priv.txt

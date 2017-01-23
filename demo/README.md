@@ -50,3 +50,5 @@ sudo docker pull salttest/ubuntu-12.04
 + [libssh tutorial](http://api.libssh.org/master/libssh_tutorial.html), [libssh + public key](http://api.libssh.org/master/libssh_tutor_authentication.html)
 + [api.libssh.org/master/group__libssh__auth](http://api.libssh.org/master/group__libssh__auth.html)
 + [PyQt standard icons](http://nukesaq88.hatenablog.com/entry/2013/04/12/005525)
++ Recursion in makefiles - [Recursive Make Considered Harmful](http://aegis.sourceforge.net/auug97.pdf)
++ file types comparison - [What is the equivalent of an “exe file”?](http://askubuntu.com/a/174356) - should use .bin, [.elf](https://en.wikipedia.org/wiki/Executable_and_Linkable_Format), [a.out](https://en.wikipedia.org/wiki/A.out)

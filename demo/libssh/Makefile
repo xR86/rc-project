@@ -1,7 +1,9 @@
 
-all: example tutorial
+all: clean example tutorial
 
 example:
-	gcc libssh-example.c -o libss-ex -lssh
+	gcc libssh-example.c -o libss-ex.bin -lssh
 tutorial:
-	gcc libssh.c -o libss -lssh
+	gcc libssh.c -o libss.bin -lssh
+clean:
+	rm -f libss.bin libss-ex.bin
