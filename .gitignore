@@ -2,6 +2,7 @@
 # Temporary
 demo/parallel/*
 demo/embedding/*
+docs/**/assets/*
 
 # Ignore these tags
 **/safe_*

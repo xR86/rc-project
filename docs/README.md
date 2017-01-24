@@ -1,17 +1,18 @@
 # rcproj
 Computer Networks Project
 
-## Files:
-+ `app-layer.png` / `client.png` - app architecture / screenshot
-+ `main.tex` - main tex file used for documentation
-+ `tema-2-rc.zip` - .tex with dependencies needed
-+ `tema-2-rc.pdf` - exported documentation
+### :exclamation: Notes:
++ `demo-docs/` - draft presentation
++ `final/` - prototype presentation (**newer**)
 
-
-## Client:
-<!-- ![Python Client](client.png) -->
-<img src="client.png" alt="Python Client" width="600px" />
-
-## Application Layer:
-<!-- ![Application Layer Diagram](app-layer.png) -->
-<img src="app-layer.png" alt="Application Layer Diagram" width="600px" />
+#### Useful packages:
++ markdown to pdf:
+  + simplest: https://github.com/joeyespo/grip -> save as pdf from chrome
+  + https://www.npmjs.com/package/md-to-pdf
+  + https://github.com/alanshaw/markdown-pdf 
+  + http://pdfmake.org/#/gettingstarted
+  + https://github.com/themekit/mkpdf
+  + https://atom.io/packages/markdown-pdf - different editor
+  + http://dillinger.io/ - (somewhat) different design
+  + http://pandoc.org/installing.html - nice, but MiKTeX needed
+  + https://gitprint.com/
