@@ -10,6 +10,8 @@
  -->
 
 
+ 	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+  	<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 	<!-- Material Design -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-material-design/0.5.10/css/bootstrap-material-design.min.css" />
@@ -41,6 +43,10 @@
 			width: 100%;
 			bottom: 0;
 		}
+
+		.btn-fab.active {
+			background-color: #cddc39;
+		}
 	</style>
 
 </head>
@@ -60,11 +66,26 @@
 	<div class="panel container-fluid">
 	  <div class="row container-fluid">
 	    <div class="col-md-2">
-	      <a href="#" class="btn btn-raised btn-success">Load new json</a>
+	      <a href="#" class="btn btn-raised btn-success" onClick="pyObj.get_files()">Load new json</a> <!-- onClick="pyObj.showMessage('Hello from WebKit')" -->
 	    </div>
 	    <div class="col-md-2 col-md-offset-05">
 	      <p>Last added date: <i id="json-date"></i> </p>
 	    </div>
+	    <div class="col-md-2 col-md-offset-05">
+	   		<div class="form-group has-warning label-floating" style="margin: 0px">
+			  <label class="control-label" for="inputWarning">Server address</label>
+			  <input type="text" class="form-control" id="serverAddress" value="127.0.0.1:8081">
+			</div>
+	    </div>
+	    <div class="col-md-2 col-md-offset-05">
+	    	<a href="#" class="btn btn-raised btn-info" onClick="pyObj.connect(document.querySelector('#serverAddress').value)">Sync</a>
+	    </div>
+	    <div class="col-md-2 col-md-offset-05">
+	    	<button type="button" class="btn btn-fab btn-fab-mini" id="onlineBtn">
+                  <!-- <i class="material-icons">cached</i> -->
+            	  <div class="ripple-container"></div>
+            </button>
+      	</div>
 	  </div>
 	</div>
 	<p>&nbsp;</p>
@@ -166,5 +187,15 @@
 	<script>
 		$.material.init()
 	</script>
+
+	<script language="JavaScript">
+    	//document.write('<p>Python ' + pyObj.pyVersion + '</p>')
+  	</script>
+
+	<script>
+		
+		
+	</script>
+
 </body>
 </html>

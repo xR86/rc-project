@@ -12,6 +12,8 @@ docs/**/assets/*
 **/*.bin
 demo/extending/build
 
+# Data files
+**/logs/*
 # Backups
 demo/back/*
 demo/termux-sync/*
