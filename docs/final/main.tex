@@ -71,7 +71,7 @@ GridAdmin offers a solution for orchestration of VMs - both on managed servers a
 
 \section{Introduction}
 %
-GridAdmin offers a solution for network administration by sending commands through a Python GUI to a C master server, that uses ssh to pass the commands to the slave machines (or respective API available for cloud platforms).
+GridAdmin offers a solution for network administration by sending commands through a Python GUI to a C intermediary server that passes along data to the Python server, that uses ssh to pass the commands to the slave machines (or respective API available for cloud platforms).
 \\\\
 Targeted functionality similar to Python's Fabric (\url{http://www.fabfile.org/}).
 
@@ -81,7 +81,7 @@ Targeted functionality similar to Python's Fabric (\url{http://www.fabfile.org/}
 
 \subsection{Server-side}
 
-The project uses C for the concurrent TCP server. Use of libssh (\url{https://www.libssh.org/}) will be employed on the server (master), along with openssh-server on the slave.\\
+The project uses C for the concurrent TCP server. Use of libssh (\url{https://www.libssh.org/}) can be employed on the server (master), along with openssh-server on the slave, but since libssh is unstable/not functional with certain OS/openssh versions, it will require the use of the Paramiko ssh library.\\
 If needed, the C server could be extended with python modules.
 
 \subsection{Client-side}
@@ -90,7 +90,7 @@ The project uses Python and PyQt4, the interface being modeled with web technolo
 
 \begin{figure}[!h]
 	\label{fig:example}
-	\includegraphics[scale=0.35]{client.png}
+	\includegraphics[scale=0.35]{client-interm.png}
 	\centering
 	\caption{Client demo}
 \end{figure}
@@ -112,11 +112,17 @@ In this project, the \textbf{master-slave model} acknowledges that there is a se
 
 
 \begin{figure}[!ht]
-\includegraphics[scale=0.45]{new_app_layer.png}
+\includegraphics[scale=0.45]{new_ideal_app_layer.png}
 \centering
 \caption{Redesigned Application Layer architecture - The client exchanges data with the server, that is C and Python separately (C data proxy and Python Paramiko server)}, the server then connects either to various machines (with openssh pre-installed) or to a AWS EC2 instance (through the API).
 \end{figure}
 
+
+\begin{figure}[!ht]
+\includegraphics[scale=0.45]{new_automata.png}
+\centering
+\caption{Automata for GridAdmin.}
+\end{figure}
 
 \FloatBarrier
 %
