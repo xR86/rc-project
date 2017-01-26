@@ -74,6 +74,7 @@ class BindObject(QtCore.QObject):
 
 		if not self.hosts_json:
 			QtGui.QMessageBox.information(None, "Info", "No hosts.json loaded")
+			logging.debug('User tried to connect to server without hosts.json file.')
 			return
 
 		ip_flag = True
@@ -100,16 +101,17 @@ class BindObject(QtCore.QObject):
 		else:
 			logging.info('connected to server')
 
-		#name = raw_input('[client]Introduceti un nume: ')
-		#s.send(name)
+		logging.info(self.hosts_json)
+		logging.info('Sending a %i characters hosts.json file' % len(str(self.hosts_json)))
+		s.send(str(self.hosts_json))
 
-		#print "[client]Mesajul primit este: %s\n"% s.recv(1024)
+		logging.info("received message from server: %s" % s.recv(4))
 		#s.close                     # Close the socket when done
 
 
 	@QtCore.pyqtSlot()
 	def get_files(self):
-		dlg = QFileDialog(caption='Open a config file', directory='/home/xr86/rc-project/A-B')
+		dlg = QFileDialog(caption='Open a config file', directory='/home/xr86/rc-project/A')
 		dlg.setFileMode(QFileDialog.AnyFile)
 		dlg.setFilter("JSON files (*.json)")
 		filenames = QtCore.QStringList()
