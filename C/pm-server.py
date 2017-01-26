@@ -8,11 +8,15 @@ import sys
 import paramiko
 
 import socket
-import signal, time
+import signal
+
+# Logging
+import logging
+from logging.handlers import RotatingFileHandler
+import time as tm
 
 
-
-terminate = False
+# terminate = False #variable for SIGINT handler
 
 # ssh could also be named client
 ssh = paramiko.SSHClient()
@@ -22,15 +26,24 @@ hosts_file = open('hosts.json', 'r')
 hosts = json.load( hosts_file )
 
 
-''' file dump
-print '---enumerating hosts: '
-for host in hosts:
-	print host['tag'], host['type']
-	print host['address']
-	print host['username']
-	print host['password']
-	print '---'
-'''
+
+
+# Function to configure logging format
+def configure_logging():
+	log = logging.getLogger('')
+	log.setLevel(logging.DEBUG)
+	format = logging.Formatter("%(asctime)s |%(name)s| %(levelname)s | >> %(message)s")
+
+	ch = logging.StreamHandler(sys.stdout)
+	ch.setFormatter(format)
+	log.addHandler(ch)
+
+	if not os.path.exists('logs/'):
+		os.makedirs('logs/')
+	time = tm.strftime('%Y-%m-%d-%H_%M_%S', tm.localtime( tm.time() ))
+	fh = RotatingFileHandler('logs/log-%s.log' % time, maxBytes=(1048576*5), backupCount=7)
+	fh.setFormatter(format)
+	log.addHandler(fh)
 
 def host_handler(hosts):
 	global ssh
@@ -79,8 +92,12 @@ def signal_handling(signum,frame):
 
 
 if __name__ == '__main__':
+	configure_logging()
+
+	logging.info('started server')
 
 	signal.signal(signal.SIGINT,signal_handling)
+	logging.info('initialized SIGINT handler') #TODO: put in else (of try-except)
 
 	s = socket.socket()         # Create a socket object
 	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -93,19 +110,28 @@ if __name__ == '__main__':
 
 	
 	while True:
-		print 'Accepting clients'
+		logging.info('Accepting clients')
 		c, addr = s.accept()		# Establish connection with client.
-		print 'Got connection from', addr
+		logging.info('Got connection from %s' % addr)
 		hosts = c.recv(1000)
-		print 'hosts: ', hosts
+		logging.info('hosts file: %s' % hosts)
 		c.send('ACK')
 
 
 		for host in json.loads(hosts):
+			''' file dump
+			print '---enumerating hosts: '
+			for host in hosts:
+				print host['tag'], host['type']
+				print host['address']
+				print host['username']
+				print host['password']
+				print '---'
+			'''
 			host_handler(host)
 		c.close()					# Close the connection
 		if terminate:
-			print "Graceful shutdown ..."
+			logging.info('Graceful shutdown ...')
 			break
 
 	hosts_file.close()
