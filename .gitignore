@@ -1,7 +1,6 @@
 
 # Temporary
 demo/parallel/*
-demo/embedding/*
 docs/**/assets/*
 
 # Ignore these tags
@@ -9,6 +8,7 @@ docs/**/assets/*
 **/new_*
 
 # Compiled
+**/*.pyc
 **/*.bin
 demo/extending/build
 

@@ -20,7 +20,7 @@
 
 	<style>
 		.row form-group input.cmd-input.form-control,
-		#inputLarge{
+		#runCmd{
 		  background-color: #111;
 		  color: #FFF;
 		  padding: 0px 5px;
@@ -157,12 +157,12 @@
 	  <div class="row container-fluid">
 	    <div class="form-group col-md-6">
 	      <div class="">
-	        <label class="control-label" for="inputLarge">Run command</label>
-	        <input class="cmd-input form-control input-lg" type="text" id="inputLarge" placeholder="echo Hello World">
+	        <label class="control-label" for="inputLarge">Enter command</label>
+	        <input class="cmd-input form-control input-lg" type="text" id="runCmd" placeholder="echo Hello World">
 	      </div>
 	    </div>
 	    <div class="col-md-2 run-container">
-	      <a href="#" class="btn btn-raised btn-info">Run</a>
+	      <a href="#" class="btn btn-raised btn-info" onClick="pyObj.run(document.querySelector('#runCmd').value)">Run</a>
 	    </div>
 	    
 	  </div>

@@ -108,6 +108,9 @@ class BindObject(QtCore.QObject):
 		logging.info("received message from server: %s" % s.recv(4))
 		#s.close                     # Close the socket when done
 
+	@QtCore.pyqtSlot(str)
+	def run(self, cmd):
+		QtGui.QMessageBox.information(None, "Info", cmd)
 
 	@QtCore.pyqtSlot()
 	def get_files(self):

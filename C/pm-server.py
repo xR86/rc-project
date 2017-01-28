@@ -2,7 +2,7 @@
 
 # General Dependencies
 import json
-import sys
+import sys, os
 
 # Connection
 import paramiko
@@ -54,7 +54,7 @@ def host_handler(hosts):
 		return
 
 	if ssh.get_transport():
-		print ssh.get_transport()
+		# print ssh.get_transport()
 		print ssh.get_transport().is_active()
 
 	try:
@@ -65,7 +65,7 @@ def host_handler(hosts):
 		    timeout = 5
 		)
 
-		stdin, stdout, stderr = ssh.exec_command('ls -l')
+		sys.stdin, sys.stdout, sys.stderr = ssh.exec_command('ls -l')
 	# (BadHostKeyException, AuthenticationException, SSHException, socket.error)
 	except Exception as e:
 		print e
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 	while True:
 		logging.info('Accepting clients')
 		c, addr = s.accept()		# Establish connection with client.
-		logging.info('Got connection from %s' % addr)
+		logging.info('Got connection from %s %s' % addr)
 		hosts = c.recv(1000)
 		logging.info('hosts file: %s' % hosts)
 		c.send('ACK')
