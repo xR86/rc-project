@@ -27,4 +27,4 @@ Computer Networks Project - MyDownloader
 - **openssl rsa encryption** - public key exchange between server and client, encrypted messages afterwards :closed_lock_with_key:
 - *to be added* ... :bulb:
 
-![Demo screenshot](/screenshot-rc.png?raw=true "during execution")
+![Demo screenshot](screenshot-rc.png)

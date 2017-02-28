@@ -3,13 +3,13 @@ Computer Networks Project
 
 ### Dockerfile / Vagrantfile
 
-sudo docker build -t "test" .
-sudo docker run -p 8081:8081 -d "test"
+`sudo docker build -t "test" .`
+`sudo docker run -p 8081:8081 -d "test"`
 
-sudo docker build -t test .
-sudo docker run -name test1 -i -t test
+`sudo docker build -t test .`
+`sudo docker run -name test1 -i -t test`
 
-sudo docker pull salttest/ubuntu-12.04
+`sudo docker pull salttest/ubuntu-12.04`
 
 
 ----
